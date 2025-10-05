@@ -1,0 +1,103 @@
+/*---------------------------------------------"
+// Template Name: WeatherForecast
+// Description:  WeatherForecast Html Template
+// Version: 1.0.0
+
+===============================================   
+STYLE SHEET INDEXING
+|
+|___ Fonts
+|___ Variables
+|___ Responsive
+|___ Reset Styles
+|___ Spacing
+|___ Helper Classes
+|___ Buttons
+|___ Headings
+|___ Layout Styles
+|___ END STYLE SHEET INDEXING
+
+--------------------------------------------*/
+
+/*-------------------------
+    Fonts
+-------------------------*/
+
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+/*-------------------------
+    Variables
+-------------------------*/
+
+/* Fonts */
+$font-primary: "Poppins", sans-serif;
+$font-awesome: "Font Awesome 6 Pro";
+
+/* Colors */
+$accent: #409AC7;
+$accent-2: #EFF3F9;
+$white: #ffffff;
+$lightest-gray: #EAEAEC;
+$light-gray: #92949F;
+$dark-gray: #45474F;
+$black: #0C0C0D;
+$light-black: #141516;
+
+/* Transitions */
+$transition: all .5s ease-in;
+
+/*-------------------------
+ Responsive Styles
+-------------------------*/
+@import "helpers/mixin";
+
+/*-------------------------
+    Reset Styles
+-------------------------*/
+@import "basic/basic";
+
+/*-------------------------
+Helpers
+-------------------------*/
+@import "helpers/classes";
+
+@import "helpers/spacing";
+
+/*-------------------------
+Elements
+-------------------------*/
+
+@import "elements/buttons";
+
+@import "elements/form";
+
+@import "elements/heading";
+
+@import "elements/preloader";
+
+@import "elements/search_popup";
+
+/*-------------------------
+  layouts
+-------------------------*/
+@import "layout/header";
+
+@import "layout/sidebar"; 
+
+@import "layout/page-header"; 
+
+@import "layout/coming-soon"; 
+
+@import "layout/forecast"; 
+
+@import "layout/contact";
+
+@import "layout/blogs";
+
+@import "layout/gallery";
+
+@import "layout/countries";
+
+@import "layout/video";
+
+@import "layout/footer";

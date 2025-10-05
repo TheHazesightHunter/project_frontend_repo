@@ -1,0 +1,87 @@
+.weekly-forecast {
+    position: relative;
+    background-color: $accent;
+    border-radius: 16px;
+    padding: clamp(16px, 1.25vw, 32px);
+    .selected-location {
+        .img-block {
+            text-align: center;
+            margin-bottom: 12px;
+            @include media-query(575px) {
+                margin-bottom: 16px;
+            }
+            img{
+                width: clamp(100px, 7.813vw, 200px);
+            }
+        }
+    }
+    .weekly-forecast-carousel {
+        height: 100%;
+        .slick-list,
+        .slick-track,
+        .slick-slide {
+            height: 100%;
+        }
+    }
+    .week-day-card {
+        padding: clamp(10px, 0.833vw, 24px);
+        height: 100%;
+        background-color: $white;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        @include media-query(992px) {
+            gap: clamp(30px, 2.5vw, 64px);
+        }
+        img{
+            width: clamp(48px, 3.33vw, 96px);
+        }
+    }
+}
+.today-highlight-card {
+    position: relative;
+    padding: clamp(16px, 1.25vw, 32px);
+    background-color: $white;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    img{
+        width: clamp(48px, 3.33vw, 96px);
+    }
+}
+.cities-forecast {
+    position: relative;
+    padding: clamp(16px, 1.25vw, 32px);
+    background-color: $white;
+    border-radius: 12px;
+    .cities-forecast-card {
+        padding: clamp(10px, 0.833vw, 24px);
+        background-color: $accent-2;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        img{
+            width: clamp(48px, 3.33vw, 96px);
+        }
+    }
+}
+
+.chart-box {
+    padding: clamp(10px, 0.833vw, 24px);
+    background-color: $white;
+    border-radius: 12px;
+    #chartContainer {
+        width: 100%;
+        position: relative;
+        height: 350px; /* Default height */
+        @include media-query(575px) {
+            height: 200px; /* Default height */
+        }
+    }
+    .canvasjs-chart-credit {
+        display: none !important;
+    }
+}
