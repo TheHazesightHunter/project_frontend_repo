@@ -1,84 +1,183 @@
 # app.py
+"""
+Flask application - Routes and request handling only
+NO business logic here!
+"""
+
 from flask import Flask, render_template
-import requests
+from config import config
+from services.weather_service import WeatherService
+from services.metrics_service import MetricsService, AlertThresholds
+from utils.formatters import format_datetime
+import logging
 
-app = Flask(__name__)
-
-API_URL = "https://apaw.cspc.edu.ph/apawbalatanapi/APIv1/Weather"
-
-# Site information (maps StationID to actual locations)
-SITES = [
-    {'id': 'St1', 'name': 'MDRRMO Office'},
-    {'id': 'St2', 'name': 'Luluasan Station'},
-    {'id': 'St3', 'name': 'Laganac Station'},
-    {'id': 'St4', 'name': 'Mang-it Station'},
-    {'id': 'St5', 'name': 'Cabanbanan Station'},
-]
+# Configure logging
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
 
 
-def fetch_weather():
-    try:
-        r = requests.get(API_URL, timeout=8)
-        r.raise_for_status()
-        payload = r.json()
-        # normalize: some APIs return {"data":[...]}, others return [...]
-        if isinstance(payload, dict) and "data" in payload:
-            return payload["data"]
-        return payload
-    except Exception as e:
-        # log in real apps; here we just return empty
-        return []
+def create_app(config_name='development'):
+    """Application factory pattern"""
+    app = Flask(__name__)
+    app.config.from_object(config[config_name])
+    
+    # Initialize services
+    weather_service = WeatherService(
+        api_url=app.config['API_URL'],
+        timeout=app.config['API_TIMEOUT']
+    )
+    
+    metrics_service = MetricsService(
+        thresholds=AlertThresholds(),
+        sites=app.config['SITES']
+    )
+    
+    # Context processor: inject global template variables
+    @app.context_processor
+    def inject_globals():
+        """Make data available to all templates"""
+        return {
+            'sites': app.config['SITES'],
+            'format_datetime': format_datetime
+        }
+    
+    # ============================================
+    # ROUTES - Thin controllers, delegate to services
+    # ============================================
+    
+    @app.route('/')
+    def home():
+        """
+        Dashboard home page
+        Shows metrics and current weather conditions
+        """
+        # Fetch data using service
+        weather_data = weather_service.fetch_weather_data()
+        
+        # Process data using services
+        latest = weather_service.get_latest_reading(weather_data)
+        stations = weather_service.get_latest_per_station(weather_data)
+        metrics = metrics_service.calculate_dashboard_metrics(stations)
+        
+        # Render template with processed data
+        return render_template(
+            'home.html',
+            weather=weather_data,
+            latest=latest,
+            metrics=metrics
+        )
+    
+    @app.route('/sites/<site_id>')
+    def site_detail(site_id):
+        """
+        Individual station detail page
+        
+        Args:
+            site_id: Station identifier from URL
+        """
+        # Validate site exists
+        site = next((s for s in app.config['SITES'] if s['id'] == site_id), None)
+        if not site:
+            return "Site not found", 404
+        
+        # Fetch and filter data using service
+        weather_data = weather_service.fetch_weather_data()
+        site_weather = weather_service.filter_by_station(weather_data, site_id)
+        latest = weather_service.get_latest_reading(site_weather)
+        
+        return render_template(
+            'sites/site_detail.html',
+            site=site,
+            latest=latest,
+            weather=site_weather[:24],
+            current_site_id=site_id
+        )
+    
+    @app.route('/about')
+    def about():
+        """About page"""
+        return render_template('about.html')
+    
+    @app.route('/contact')
+    def contact():
+        """Contact page"""
+        return render_template('contact.html')
+    
+    @app.route('/test-dashboard')
+    def test_dashboard():
+    
+        """Test dashboard with fake data"""
+        
+        fake_stations = {
+            'St1': {
+                'StationID': 'St1',
+                'WaterLevel': 11.5,     # Critical
+                'HourlyRain': 35.0,     # Intense rain!
+                'WindSpeed': 15,
+            },
+            'St2': {
+                'StationID': 'St2',
+                'WaterLevel': 9.8,      # Warning
+                'HourlyRain': 20.0,     # Heavy rain
+                'WindSpeed': 12,
+            },
+            'St3': {
+                'StationID': 'St3',
+                'WaterLevel': 8.3,      # Alert
+                'HourlyRain': 10.0,     # Moderate rain
+                'WindSpeed': 8,
+            },
+            'St4': {
+                'StationID': 'St4',
+                'WaterLevel': 7.2,      # Advisory
+                'HourlyRain': 5.0,      # Light rain
+                'WindSpeed': 6,
+            },
+            'St5': {
+                'StationID': 'St5',
+                'WaterLevel': 6.1,      # Normal
+                'HourlyRain': 1.0,      # Light rain
+                'WindSpeed': 4,
+            }
+        }
+    
+        metrics = metrics_service.calculate_dashboard_metrics(fake_stations)
+        
+        logger.info("="*60)
+        logger.info("TEST DASHBOARD METRICS:")
+        logger.info(f"  Highest Alert: {metrics.highest_alert_level} ({metrics.highest_alert_count})")
+        logger.info(f"  Stations Needing Attention: {len(metrics.attention_stations)}/5")
+        logger.info(f"  Online: {metrics.online_sensors}/5")
+        logger.info("="*60)
+        
+        latest = fake_stations['St1']
+        weather_list = list(fake_stations.values())
+        
+        return render_template(
+            'home.html',
+            weather=weather_list,
+            latest=latest,
+            metrics=metrics
+        )
+    
+    # ============================================
+    # ERROR HANDLERS
+    # ============================================
+    
+    @app.errorhandler(404)
+    def not_found(error):
+        return render_template('errors/404.html'), 404
+    
+    @app.errorhandler(500)
+    def server_error(error):
+        logger.error(f"Server error: {error}")
+        return render_template('errors/500.html'), 500
+    
+    return app
 
 
-@app.context_processor
-def inject_data():
-    """Make sites available to all templates"""
-    return {
-        'sites': SITES
-    }
-
-
-@app.route('/')
-def home():
-    weather = fetch_weather()   # list[dict]
-    # You can also pre-pick “latest” here if you want:
-    latest = weather[0] if weather else None
-    return render_template("home.html", weather=weather, latest=latest)
-
-
-@app.route('/sites/<site_id>')
-def site_detail(site_id):
-    """Detailed view for a specific weather station"""
-    # Find the site info
-    site = next((s for s in SITES if s['id'] == site_id), None)
-    if not site:
-        return "Site not found", 404
-
-    # Get all weather data
-    weather = fetch_weather()
-
-    # Filter readings for this specific station
-    site_weather = [r for r in weather if r.get('StationID') == site_id]
-
-    # Get latest reading for this station
-    latest = site_weather[0] if site_weather else None
-
-    return render_template('sites/site_detail.html',
-                           site=site,
-                           latest=latest,
-                           weather=site_weather[:24],  # Last 24 readings
-                           current_site_id=site_id)  # for active nav
-@app.route('/about')
-def about():
-    """About page"""
-    return render_template('about.html')
-
-
-@app.route('/contact')
-def contact():
-    """Contact page"""
-    return render_template('contact.html')
-
+# Create app instance
+app = create_app()
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

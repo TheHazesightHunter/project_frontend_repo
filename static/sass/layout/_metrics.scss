@@ -1,0 +1,262 @@
+// sass/layout/_metrics.scss
+// ============================================
+// METRICS CARDS - Clean, Non-clickable Design
+// ============================================
+
+.metrics-grid {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 8px;
+	margin-bottom: 32px;
+}
+
+.metric-card {
+	background: white;
+	padding: 18px;
+	border-radius: 12px;
+	box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+	transition: all 0.3s ease;
+	border: 1px solid #e2e8f0;
+
+	// Hover effect only (not clickable)
+	&:hover {
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		transform: translateY(-2px);
+	}
+
+	// Remove any focus/active states
+	&:focus,
+	&:active {
+		outline: none;
+		border-color: #e2e8f0; // Keep original border
+	}
+}
+
+.metric-header {
+	font-size: 8px;
+	font-weight: 500;
+	color: $light-gray;
+	margin-bottom: 12px;
+	text-transform: uppercase;
+	letter-spacing: 0.5px;
+}
+
+.metric-value {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	span:first-child {
+		font-size: 24px;
+		font-weight: 700;
+		color: $dark-gray;
+		line-height: 1;
+	}
+}
+
+.metric-icon {
+	font-size: 28px; // Desktop size
+
+	i {
+		// NO hover animation (as requested)
+		transition: none;
+	}
+}
+
+// ============================================
+// ALERT BADGES
+// ============================================
+
+.alert-badges {
+	display: flex;
+	gap: 12px;
+	margin-top: 24px;
+	margin-bottom: 24px;
+	flex-wrap: wrap;
+}
+
+.badge {
+	padding: 10px 18px;
+	border-radius: 24px;
+	font-size: 13px;
+	font-weight: 600;
+	display: inline-flex;
+	align-items: center;
+	gap: 8px;
+	transition: all 0.2s ease;
+
+	i {
+		font-size: 12px;
+	}
+
+	&:hover {
+		transform: translateY(-1px);
+		box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+	}
+}
+
+.badge-critical {
+	background-color: #dc2626;
+	color: white;
+}
+
+.badge-warning {
+	background-color: #f59e0b;
+	color: white;
+}
+
+.badge-alert {
+	background-color: #eab308;
+	color: white;
+}
+
+.badge-advisory {
+	background-color: #3b82f6;
+	color: white;
+}
+
+// ============================================
+// RESPONSIVE DESIGN
+// ============================================
+
+// Large Tablets & Small Laptops (1024px - 1199px)
+@media (max-width: 1199px) {
+	.metrics-grid {
+		grid-template-columns: repeat(4, 1fr);
+		gap: 16px;
+	}
+
+	.metric-card {
+		padding: 20px;
+	}
+
+	.metric-header {
+		font-size: 11px;
+		margin-bottom: 10px;
+	}
+
+	.metric-value {
+		span:first-child {
+			font-size: 28px; // Slightly smaller
+		}
+	}
+
+	.metric-icon {
+		font-size: 28px; // Slightly smaller
+	}
+}
+
+// Tablets (768px - 1023px)
+@media (max-width: 1023px) {
+	.metrics-grid {
+		grid-template-columns: repeat(2, 1fr); // Keep 2 columns
+		gap: 14px;
+	}
+
+	.metric-card {
+		padding: 18px;
+		min-height: 120px;
+	}
+
+	.metric-header {
+		font-size: 10px;
+		margin-bottom: 8px;
+		letter-spacing: 0.3px;
+	}
+
+	.metric-value {
+		span:first-child {
+			font-size: 26px; // Smaller for tablets
+		}
+	}
+
+	.metric-icon {
+		font-size: 26px;
+	}
+
+	.alert-badges {
+		gap: 10px;
+		margin-top: 20px;
+	}
+
+	.badge {
+		padding: 8px 14px;
+		font-size: 12px;
+
+		i {
+			font-size: 11px;
+		}
+	}
+}
+
+// Mobile (< 768px)
+@media (max-width: 767px) {
+	.metrics-grid {
+		grid-template-columns: 1fr; // Stack vertically
+		gap: 12px;
+	}
+
+	.metric-card {
+		padding: 16px;
+		min-height: 100px;
+	}
+
+	.metric-header {
+		font-size: 10px;
+		margin-bottom: 8px;
+	}
+
+	.metric-value {
+		span:first-child {
+			font-size: 24px; // Smaller for mobile
+		}
+	}
+
+	.metric-icon {
+		font-size: 24px; // Smaller for mobile
+	}
+
+	.alert-badges {
+		gap: 8px;
+		margin-top: 16px;
+		margin-bottom: 16px;
+	}
+
+	.badge {
+		padding: 7px 12px;
+		font-size: 11px;
+
+		i {
+			font-size: 10px;
+		}
+	}
+}
+
+// Small Mobile (< 480px)
+@media (max-width: 767px) {
+	.metrics-grid {
+		grid-template-columns: repeat(2, 1fr); // ✅ THIS LINE = 2 cards per row
+		gap: 10px;
+	}
+
+	.metric-card {
+		padding: 14px;
+		min-height: 80px;
+	}
+
+	.metric-header {
+		font-size: 8px;
+		margin-bottom: 8px;
+		letter-spacing: 0.3px;
+	}
+
+	.metric-value {
+		span:first-child {
+			font-size: 22px;
+		}
+	}
+
+	.metric-icon {
+		font-size: 24px;
+	}
+}

@@ -23,7 +23,7 @@ STYLE SHEET INDEXING
     Fonts
 -------------------------*/
 
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
 /*-------------------------
     Variables
@@ -34,17 +34,17 @@ $font-primary: "Poppins", sans-serif;
 $font-awesome: "Font Awesome 6 Pro";
 
 /* Colors */
-$accent: #409AC7;
-$accent-2: #EFF3F9;
+$accent: #409ac7;
+$accent-2: #eff3f9;
 $white: #ffffff;
-$lightest-gray: #EAEAEC;
-$light-gray: #92949F;
-$dark-gray: #45474F;
-$black: #0C0C0D;
+$lightest-gray: #eaeaec;
+$light-gray: #92949f;
+$dark-gray: #45474f;
+$black: #0c0c0d;
 $light-black: #141516;
 
 /* Transitions */
-$transition: all .5s ease-in;
+$transition: all 0.5s ease-in;
 
 /*-------------------------
  Responsive Styles
@@ -82,13 +82,13 @@ Elements
 -------------------------*/
 @import "layout/header";
 
-@import "layout/sidebar"; 
+@import "layout/sidebar";
 
-@import "layout/page-header"; 
+@import "layout/page-header";
 
-@import "layout/coming-soon"; 
+@import "layout/coming-soon";
 
-@import "layout/forecast"; 
+@import "layout/forecast";
 
 @import "layout/contact";
 
@@ -101,3 +101,5 @@ Elements
 @import "layout/video";
 
 @import "layout/footer";
+
+@import "layout/metrics";
